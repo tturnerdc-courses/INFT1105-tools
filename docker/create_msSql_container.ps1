@@ -39,8 +39,8 @@ if($chocoInstall -eq $true)
     #install the chocolatey package manager by first setting execution policy to bypass
     Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     # install docker desktop
-    choco install docker-desktop;
-
+    choco install docker-desktop -y;
+    Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe" -ErrorAction SilentlyContinue
 }
 else {
     write-host "WARNING: You selected not to use chocolatey. This means you MUST have docker desktop installed. press enter to contine" -ForegroundColor DarkYellow
