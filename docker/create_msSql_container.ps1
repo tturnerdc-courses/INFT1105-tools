@@ -51,6 +51,16 @@ else {
 if((docker ps 2>&1) -match '^(?!error)'){
     write-host "running docker compose!" -foregroundcolor green
     docker-compose up --build -d
+    Clear-Host
+    write-host "Do you wish to install SQL Server Management Studio?:"-ForegroundColor Cyan
+    write-host "Y or N: " -ForegroundColor Cyan -NoNewline
+    $ssmsInstall =  read-host | check-YN 
+    if($ssmsInstall -eq $true)
+    {
+        write-host "Installing SQL Server Management Studio (SSMS)" -ForegroundColor Yellow
+        (choco install sql-server-management-studio -y) -and  (Clear-Host) -and (write-host "SSMS installed successfully!" -ForegroundColor Green)
+    }
+
  }
  else {
     Write-Host "Docker is either not installed or NOT running." -ForegroundColor Red
@@ -59,32 +69,3 @@ if((docker ps 2>&1) -match '^(?!error)'){
 
 
     
-#region functions
-Function check-YN {
-    [CmdletBinding()]
-    Param (
-        [parameter(ValueFromPipeline,Position=0)]
-        [String[]]
-        $value,
-        $originalQuestion="Please answer Y or N"
-    )
-    $isValidAnswer = @("true","false","yes","no", "y", "n", "Y","N", "YES", "NO", "TRUE", "FALSE") -contains $value 
-    if($isValidAnswer)
-    {
-         $result =  @("true","yes", "y", "Y", "YES") -contains $value 
-         Write-debug "$value is valid answer: $isValidAnswer"
-         Write-Output ([System.Convert]::ToBoolean($result))
-    }
-    else
-    {
-         do{
-              $value = read-host "try again. $originalQuestion :"
-              $isValidAnswer = @("true","false","yes","no", "y", "n", "Y","N", "YES", "NO", "TRUE", "FALSE") -contains $value 
-              Write-debug "$value is valid answer: $isValidAnswer"
-         }
-         while($isValidAnswer -eq $false)
-         $result =  @("true","yes", "y", "Y", "YES") -contains $value 
-         Write-Output ([System.Convert]::ToBoolean($result))
-    }
-}
-#endregion
